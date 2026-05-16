@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="LL Pricing">
-  <title>Landscape Lighting Pricing</title>
+  <meta name="apple-mobile-web-app-title" content="LL Materials">
+  <title>LL Materials Picker</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -67,12 +67,10 @@
     .product-info { flex: 1; }
     .product-name { font-size: 14px; color: var(--text); }
     .product-price { font-size: 12px; color: var(--text3); margin-top: 1px; }
-    .qty-wrap { display: flex; align-items: center; gap: 0; background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius-sm); overflow: hidden; }
+    .qty-wrap { display: flex; align-items: center; background: var(--surface2); border: 0.5px solid var(--border2); border-radius: var(--radius-sm); overflow: hidden; }
     .qty-btn { width: 32px; height: 32px; background: none; border: none; font-size: 18px; color: var(--accent); cursor: pointer; font-family: inherit; -webkit-tap-highlight-color: transparent; display: flex; align-items: center; justify-content: center; }
     .qty-btn:active { opacity: 0.5; }
     .qty-val { width: 28px; text-align: center; font-size: 14px; font-weight: 600; color: var(--text); }
-
-    /* Selected summary */
     .selected-summary { border-top: 0.5px solid var(--border); }
     .selected-item { display: flex; justify-content: space-between; align-items: center; padding: 9px 16px; border-bottom: 0.5px solid var(--border); font-size: 13px; }
     .selected-item:last-child { border-bottom: none; }
@@ -82,7 +80,10 @@
     .selected-total span { font-size: 14px; font-weight: 600; color: var(--accent); }
     .send-materials-btn { display: block; width: calc(100% - 32px); margin: 12px 16px; padding: 13px; background: var(--green); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; text-align: center; }
     .send-materials-btn:active { opacity: 0.8; }
-    .empty-state { padding: 16px; text-align: center; font-size: 13px; color: var(--text3); }
+
+    /* Wire & Misc */
+    .add-btn { display: block; width: calc(100% - 32px); margin: 12px 16px; padding: 13px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; text-align: center; }
+    .add-btn:active { opacity: 0.8; }
 
     /* Results */
     .results-card { background: var(--surface); border-radius: var(--radius); border: 0.5px solid var(--border); margin-bottom: 12px; overflow: hidden; }
@@ -149,285 +150,18 @@
     <div id="selected-summary" class="selected-summary" style="display:none"></div>
   </div>
 
-  <!-- Pricing Inputs -->
+  <!-- Wire & Misc -->
   <div class="card">
-    <div class="card-header">Materials &amp; labor</div>
-    <div class="field"><label>Materials cost</label><div class="input-wrap"><span class="affix">$</span><input type="number" id="materials" inputmode="decimal" placeholder="0.00" min="0" step="0.01"></div></div>
-    <div class="field"><label>Labor rate</label><div class="input-wrap"><span class="affix">$</span><input type="number" id="rate" inputmode="decimal" value="25" min="0" step="0.01"><span class="affix">/hr</span></div></div>
-    <div class="field"><label>Labor hours</label><div class="input-wrap"><input type="number" id="hours" inputmode="decimal" placeholder="0" min="0" step="0.5"><span class="affix">hrs</span></div></div>
-    <div class="field"><label>Misc fees</label><div class="input-wrap"><span class="affix">$</span><input type="number" id="misc" inputmode="decimal" placeholder="0.00" min="0" step="0.01"></div></div>
-  </div>
-  <div class="card">
-    <div class="card-header">Pricing targets</div>
-    <div class="field"><label>Target gross margin %</label><div class="input-wrap"><input type="number" id="gp" inputmode="decimal" value="62" min="0" max="99" step="1"><span class="affix">%</span></div></div>
-    <div class="field"><label>Overhead % of revenue</label><div class="input-wrap"><input type="number" id="oh" inputmode="decimal" value="35" min="0" max="99" step="1"><span class="affix">%</span></div></div>
-  </div>
-
-  <!-- Results -->
-  <div class="results-card">
-    <div class="card-header">Results</div>
-    <div class="result-row"><span class="rl">Labor cost (hours x rate)</span><span class="rv" id="r-labor">-</span></div>
-    <div class="result-row"><span class="rl">COGS subtotal</span><span class="rv" id="r-cogs">-</span></div>
-    <div class="result-row"><span class="rl">Contingency (5% of COGS)</span><span class="rv" id="r-contingency">-</span></div>
-    <div class="result-row"><span class="rl">Final COGS (with contingency)</span><span class="rv" id="r-finalcogs">-</span></div>
-    <div class="result-row big"><span class="rl">Final price</span><span class="rv" id="r-price">-</span></div>
-    <div class="result-row profit"><span class="rl">Net profit $ (after overhead)</span><span class="rv" id="r-netprofit">-</span></div>
-    <div class="result-row profit"><span class="rl">Net profit % of revenue</span><span class="rv" id="r-netpct">-</span></div>
+    <div class="card-header">Wire &amp; misc materials</div>
+    <div class="field">
+      <label>Wire cost</label>
+      <div class="input-wrap"><span class="affix">$</span><input type="number" id="wire" inputmode="decimal" placeholder="0.00" min="0" step="0.01"></div>
+    </div>
+    <div class="field">
+      <label>Misc materials</label>
+      <div class="input-wrap"><span class="affix">$</span><input type="number" id="miscmat" inputmode="decimal" placeholder="0.00" min="0" step="0.01"></div>
+    </div>
+    <button class="add-btn" onclick="sendWireToMaterials()">&#8595; Add to Materials Cost</button>
   </div>
 
-  <button class="reset-btn" onclick="resetAll()">Reset all fields</button>
-  <p class="footer-note">In Safari: tap Share then "Add to Home Screen" to install</p>
-</main>
-
-<script>
-// ── Google Sheet CSV URL ──
-var SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZAI79NazpVG1SfA1nWJoOO1jdXZhPpotr3g4BJ50WBBig7BIvbXjCKjwHJmadgPi9iOF0tiLLOFKs/pub?output=csv';
-
-// ── Product data & state ──
-var brands = []; // [{name, categories: [{name, products: [{name, price}]}]}]
-var quantities = {}; // key: "brand|category|name" -> qty
-var activeBrand = 0;
-
-// ── Parse CSV ──
-function parseCSV(text) {
-  var lines = text.split('\n').map(function(l){ return l.replace(/\r/,''); });
-  // Sheet layout: Sterling(A,B), AMP(C,D), Lumien(E,F) — 6 columns per row
-  var brandData = [
-    {name:'Sterling', colName:0, colPrice:1, categories:[], _curCat:''},
-    {name:'AMP',      colName:2, colPrice:3, categories:[], _curCat:''},
-    {name:'Lumien',   colName:4, colPrice:5, categories:[], _curCat:''}
-  ];
-
-  function getCell(cells, idx) {
-    return (cells[idx]||'').replace(/^"|"$/g,'').trim();
-  }
-
-  lines.forEach(function(line, li) {
-    if(li===0) return; // skip header row (Sterling / AMP / Lumien labels)
-    var cells = line.split(',');
-
-    brandData.forEach(function(b) {
-      var nameCell = getCell(cells, b.colName);
-      var priceCell = getCell(cells, b.colPrice).replace(/[$,\s]/g,'');
-      if(!nameCell) return;
-
-      var price = parseFloat(priceCell);
-      var isCategory = isNaN(price) || priceCell === '';
-
-      if(isCategory) {
-        // It's a category header
-        b._curCat = nameCell;
-      } else {
-        // It's a product
-        if(!b._curCat) b._curCat = 'General';
-        var cat = b.categories.find(function(c){ return c.name === b._curCat; });
-        if(!cat) { cat = {name: b._curCat, products:[]}; b.categories.push(cat); }
-        cat.products.push({name: nameCell, price: price});
-      }
-    });
-  });
-
-  // Filter out brands with no products
-  return brandData.filter(function(b){ return b.categories.length > 0; });
-}
-
-// ── Render picker ──
-function renderPicker() {
-  var body = document.getElementById('picker-body');
-  if(!brands.length) { body.innerHTML='<div class="picker-error">No products found. Check your sheet.</div>'; return; }
-
-  var html = '<div class="brand-tabs">';
-  brands.forEach(function(b, i) {
-    html += '<button class="brand-tab'+(i===activeBrand?' active':'')+'" onclick="switchBrand('+i+')">'+b.name+'</button>';
-  });
-  html += '</div>';
-
-  var b = brands[activeBrand];
-  b.categories.forEach(function(cat) {
-    html += '<div class="category-label">'+cat.name+'</div>';
-    cat.products.forEach(function(p) {
-      var key = b.name+'|'+cat.name+'|'+p.name;
-      var qty = quantities[key]||0;
-      html += '<div class="product-row">';
-      html += '<div class="product-info"><div class="product-name">'+p.name+'</div><div class="product-price">$'+p.price.toFixed(2)+' each</div></div>';
-      html += '<div class="qty-wrap">';
-      html += '<button class="qty-btn" onclick="changeQty(\''+escKey(key)+'\','+p.price+',-1)">−</button>';
-      html += '<div class="qty-val">'+qty+'</div>';
-      html += '<button class="qty-btn" onclick="changeQty(\''+escKey(key)+'\','+p.price+',1)">+</button>';
-      html += '</div></div>';
-    });
-  });
-
-  body.innerHTML = html;
-  renderSummary();
-}
-
-function escKey(k){ return k.replace(/'/g,"\\'"); }
-
-function switchBrand(i) {
-  activeBrand = i;
-  renderPicker();
-}
-
-function changeQty(key, price, delta) {
-  var q = (quantities[key]||0) + delta;
-  if(q < 0) q = 0;
-  if(q === 0) delete quantities[key]; else quantities[key] = q;
-  renderPicker();
-}
-
-function renderSummary() {
-  var summary = document.getElementById('selected-summary');
-  var keys = Object.keys(quantities);
-  if(!keys.length) { summary.style.display='none'; return; }
-
-  var total = 0;
-  var html = '';
-  keys.forEach(function(key) {
-    var qty = quantities[key];
-    var parts = key.split('|');
-    var brandName = parts[0], catName = parts[1], prodName = parts[2];
-    var brand = brands.find(function(b){ return b.name===brandName; });
-    if(!brand) return;
-    var cat = brand.categories.find(function(c){ return c.name===catName; });
-    if(!cat) return;
-    var prod = cat.products.find(function(p){ return p.name===prodName; });
-    if(!prod) return;
-    var lineTotal = prod.price * qty;
-    total += lineTotal;
-    html += '<div class="selected-item"><span class="si-name">'+prodName+' × '+qty+'</span><span class="si-val">$'+lineTotal.toFixed(2)+'</span></div>';
-  });
-
-  html += '<div class="selected-total"><span>Materials total</span><span>$'+total.toFixed(2)+'</span></div>';
-  html += '<button class="send-materials-btn" onclick="sendProductsToMaterials()">&#8595; Send $'+total.toFixed(2)+' to Materials Cost</button>';
-
-  summary.innerHTML = html;
-  summary.style.display = 'block';
-}
-
-function sendProductsToMaterials() {
-  var total = 0;
-  Object.keys(quantities).forEach(function(key) {
-    var qty = quantities[key];
-    var parts = key.split('|');
-    var brand = brands.find(function(b){ return b.name===parts[0]; });
-    if(!brand) return;
-    var cat = brand.categories.find(function(c){ return c.name===parts[1]; });
-    if(!cat) return;
-    var prod = cat.products.find(function(p){ return p.name===parts[2]; });
-    if(!prod) return;
-    total += prod.price * qty;
-  });
-  document.getElementById('materials').value = total.toFixed(2);
-  calc();
-  document.getElementById('materials').scrollIntoView({behavior:'smooth', block:'center'});
-}
-
-function clearSelections() {
-  quantities = {};
-  renderPicker();
-}
-
-// ── Load sheet ──
-function loadSheet() {
-  fetch(SHEET_URL)
-    .then(function(r){ return r.text(); })
-    .then(function(text) {
-      brands = parseCSV(text);
-      renderPicker();
-    })
-    .catch(function() {
-      document.getElementById('picker-body').innerHTML = '<div class="picker-error">Could not load products. Check your internet connection.</div>';
-    });
-}
-
-// ── Calculator ──
-var calcVal='0', calcExpr='', calcOp=null, calcPrev=null, calcFresh=false;
-function updateCalcDisplay(){
-  document.getElementById('calc-screen').textContent=parseFloat(calcVal).toLocaleString('en-US',{maximumFractionDigits:8});
-  document.getElementById('calc-expr').textContent=calcExpr;
-}
-function calcInput(v){
-  if(['+','-','*','/'].includes(v)){
-    var n=parseFloat(calcVal);
-    var sym=v==='+'?'+':v==='-'?'−':v==='*'?'×':'÷';
-    if(calcOp&&calcPrev!==null&&!calcFresh){
-      var r;
-      if(calcOp==='+')r=calcPrev+n; else if(calcOp==='-')r=calcPrev-n;
-      else if(calcOp==='*')r=calcPrev*n; else if(calcOp==='/')r=calcPrev/n;
-      calcPrev=Math.round(r*1e10)/1e10; calcVal=String(calcPrev);
-    } else { calcPrev=n; }
-    calcOp=v; calcExpr=calcVal+' '+sym; calcFresh=true;
-    updateCalcDisplay(); return;
-  }
-  if(v==='.'&&calcVal.includes('.')) return;
-  if(calcFresh){calcVal=(v==='.')?'0.':v; calcFresh=false;}
-  else{calcVal=(calcVal==='0'&&v!=='.')?v:calcVal+v;}
-  updateCalcDisplay();
-}
-function calcAction(a){
-  var n=parseFloat(calcVal);
-  if(a==='clear'){calcVal='0';calcExpr='';calcOp=null;calcPrev=null;calcFresh=false;}
-  else if(a==='sign'){calcVal=String(-n);}
-  else if(a==='pct'){calcVal=String(n/100);}
-  else if(a==='equals'){
-    if(calcOp&&calcPrev!==null){
-      var r;
-      if(calcOp==='+')r=calcPrev+n; else if(calcOp==='-')r=calcPrev-n;
-      else if(calcOp==='*')r=calcPrev*n; else if(calcOp==='/')r=calcPrev/n;
-      calcExpr=''; calcVal=String(Math.round(r*1e10)/1e10);
-      calcOp=null; calcPrev=null; calcFresh=true;
-    }
-  }
-  updateCalcDisplay();
-}
-function sendCalcToMaterials(){
-  var val=parseFloat(calcVal);
-  if(!isNaN(val)){
-    document.getElementById('materials').value=val.toFixed(2);
-    calc();
-    document.getElementById('materials').scrollIntoView({behavior:'smooth',block:'center'});
-  }
-}
-
-// ── Pricing calc ──
-function fmt(n){return '$'+n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
-function pct(n){return n.toFixed(1)+'%';}
-function calc(){
-  var m=parseFloat(document.getElementById('materials').value)||0;
-  var r=parseFloat(document.getElementById('rate').value)||0;
-  var h=parseFloat(document.getElementById('hours').value)||0;
-  var misc=parseFloat(document.getElementById('misc').value)||0;
-  var gp=parseFloat(document.getElementById('gp').value)||0;
-  var oh=parseFloat(document.getElementById('oh').value)||0;
-  var labor=r*h,cogs=m+labor+misc,cont=cogs*0.05,fcogs=cogs+cont;
-  var div=1-(gp/100),price=div>0?fcogs/div:0;
-  var overhead=price*(oh/100),np=price-fcogs-overhead,npct=price>0?(np/price)*100:0;
-  document.getElementById('r-labor').textContent=fmt(labor);
-  document.getElementById('r-cogs').textContent=fmt(cogs);
-  document.getElementById('r-contingency').textContent=fmt(cont);
-  document.getElementById('r-finalcogs').textContent=fmt(fcogs);
-  document.getElementById('r-price').textContent=fmt(price);
-  document.getElementById('r-netprofit').textContent=fmt(np);
-  document.getElementById('r-netpct').textContent=pct(npct);
-}
-function resetAll(){
-  document.getElementById('materials').value='';
-  document.getElementById('hours').value='';
-  document.getElementById('misc').value='';
-  document.getElementById('rate').value='25';
-  document.getElementById('gp').value='62';
-  document.getElementById('oh').value='35';
-  ['r-labor','r-cogs','r-contingency','r-finalcogs','r-price','r-netprofit','r-netpct'].forEach(function(id){document.getElementById(id).textContent='-';});
-  quantities={};
-  renderPicker();
-  calcVal='0';calcExpr='';calcOp=null;calcPrev=null;calcFresh=false;
-  updateCalcDisplay();
-}
-
-document.querySelectorAll('#materials,#rate,#hours,#misc,#gp,#oh').forEach(function(el){el.addEventListener('input',calc);});
-loadSheet();
-calc();
-</script>
-</body>
-</html>
+  <!-- Pricing Inpu
